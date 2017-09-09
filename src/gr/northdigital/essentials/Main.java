@@ -2,11 +2,6 @@ package gr.northdigital.essentials;
 
 import gr.northdigital.cryptography.RSACryptographyHelper;
 
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-
 public class Main {
 
   private static final String PRIVATE_KEY_FILE = "private.key";
