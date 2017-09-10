@@ -9,6 +9,29 @@ import java.security.PublicKey;
 
 public class RSACryptographyHelper {
 
+  private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+  private static String bytesToHex(byte[] bytes) {
+    char[] hexChars = new char[bytes.length * 2];
+    for (int j = 0; j < bytes.length; j++) {
+      int v = bytes[j] & 0xFF;
+      hexChars[j * 2] = hexArray[v >>> 4];
+      hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+    }
+    return new String(hexChars);
+  }
+
+  public static byte[] hexStringToByteArray(String hexString) {
+    int len = hexString.length();
+    byte[] data = new byte[len / 2];
+    for (int i = 0; i < len; i += 2) {
+      data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+        + Character.digit(hexString.charAt(i + 1), 16));
+    }
+
+    return data;
+  }
+
   public static void generateKey(String privateKeyFileName, String publicKeyFileName) {
     try {
       final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
@@ -73,6 +96,10 @@ public class RSACryptographyHelper {
     return encrypt(originalText, publicKey);
   }
 
+  public static String encryptEx(String originalText, String publicKeyFile) throws IOException, ClassNotFoundException {
+    return bytesToHex(encrypt(originalText, publicKeyFile));
+  }
+
   public static String decrypt(byte[] cipherText, PrivateKey key) {
     byte[] dectyptedText = null;
     try {
@@ -86,11 +113,19 @@ public class RSACryptographyHelper {
     return new String(dectyptedText);
   }
 
-  public static String decrypt(byte[] cipherText, String PrivateKeyFile) throws IOException, ClassNotFoundException {
+  public static String decrypt(byte[] cipherText, String privateKeyFile) throws IOException, ClassNotFoundException {
     ObjectInputStream inputStream = null;
 
-    inputStream = new ObjectInputStream(new FileInputStream(PrivateKeyFile));
+    inputStream = new ObjectInputStream(new FileInputStream(privateKeyFile));
     final PrivateKey privateKey = (PrivateKey) inputStream.readObject();
     return RSACryptographyHelper.decrypt(cipherText, privateKey);
+  }
+
+  public static String decryptEx(String cipherText, String privateKeyFile) throws IOException, ClassNotFoundException {
+    return decrypt(hexStringToByteArray(cipherText), privateKeyFile);
+  }
+
+  public static String echo(String message) {
+    return message + ',' + message;
   }
 }
