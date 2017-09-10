@@ -21,7 +21,7 @@ public class RSACryptographyHelper {
     return new String(hexChars);
   }
 
-  public static byte[] hexStringToByteArray(String hexString) {
+  private static byte[] hexStringToByteArray(String hexString) {
     int len = hexString.length();
     byte[] data = new byte[len / 2];
     for (int i = 0; i < len; i += 2) {
