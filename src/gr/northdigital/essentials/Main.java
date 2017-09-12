@@ -27,7 +27,7 @@ public class Main {
       System.out.println("Encrypted: " + cipherText.toString());
       System.out.println("Decrypted: " + plainText);
 
-      String hexCipherText = RSACryptographyHelper.encryptToHexString(originalText, PUBLIC_KEY_FILE);
+      String hexCipherText = RSACryptographyHelper.encrypt2HexString(originalText, PUBLIC_KEY_FILE);
       String hexOriginalText = RSACryptographyHelper.decryptFromHexString(hexCipherText, PRIVATE_KEY_FILE);
 
       System.out.println("hexText: " + hexCipherText);

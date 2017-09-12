@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION system.encrypt2bytearray(originaltext VARCHAR2, publi
   LANGUAGE JAVA NAME 'gr.northdigital.cryptography.RSACryptographyHelper.encrypt2ByteArray(java.lang.String,java.lang.String) return java.lang.Byte[]';
 
 CREATE OR REPLACE FUNCTION system.encrypt2hexstring(originaltext VARCHAR2, publickeyfile VARCHAR2) RETURN VARCHAR2 AS
-  LANGUAGE JAVA NAME 'gr.northdigital.cryptography.RSACryptographyHelper.encryptToHexString(java.lang.String,java.lang.String) return java.lang.String';
+  LANGUAGE JAVA NAME 'gr.northdigital.cryptography.RSACryptographyHelper.encrypt2HexString(java.lang.String,java.lang.String) return java.lang.String';
 -----------------------------------------------------------------------------------------------------------------------------------------------
 
   --DECRYPT--------------------------------------------------------------------------------------------------------------------------------------
@@ -49,25 +49,9 @@ GRANT EXECUTE ON system.decryptfromhexstring TO logismos
 
   --TEST-----------------------------------------------------------------------------------------------------------------------------------------
 
-SELECT system.encrypt2bytearray('ΠΑΠΑΔΟΠΟΥΛΟΣ', '/home/oracle/public.key') FROM dual;
+SELECT system.encrypt2bytearray('papadopoulos', '/home/oracle/public.key') FROM dual;
+SELECT system.decryptfromraw('9468D1978CA8EA9B5A7639D91364518EE33ABC7A344E4DC2C3AEE97144B79B03427CFAAB2AD48F91D5991F898ABB3A8E1262D9444176947D6876E78FF8F5B46A9FE0E7B98FE91CACB2DADFE7465A6B2F6730ECA65F85F2ED4B4D9A21ABD7B6DA40545CEE7D38CA89789C1A762822671C184FA00F06FE9757F949ECAB77F9CBC0', '/home/oracle/private.key') FROM dual;
 
-SELECT system.encrypttohexstring('ΠΑΠΑΔΟΠΟΥΛΟΣ το καλό το παλικάρι ξέρει κι άλλο μονοπάτι', '/home/oracle/public.key') FROM dual;
-
-SELECT system.decryptfromraw('20BF2571156449D51D3A12187C8B35425CA23603DC4B4DCE68296D3838578FCE9C9E182CD43F16FB07F6CF99F983DED1DCA7F89082CBA02F900AB187EF0853641BD0AA1204886B26CE8BDC80452244AE13CD626398BC202FE5C89661036FAC5C1B66F2A5357812CCC88F5EC2DC109D30C7338E9574F3034E208F8A5BBFFCD762', '/home/oracle/private.key') FROM dual;
-
-SELECT system.decryptfromraw((SELECT system.encrypt2bytearray('ΠΑΠΑΔΟΠΟΥΛΟΣ', '/home/oracle/public.key') FROM dual), '/home/oracle/private.key') FROM dual;
-
-SELECT system.decryptfromhexstring('9340921FD5FB20ECD21A8D0698F676901E1C52ED357E8143F27D6A897904C45EA13E0875CF41ED7710CC94FC19E89EB3B4715FBB08F2E3EFE2409D241D96E1FE9C4754287A48FB44264639E313CE59F223F26005CF2E6EFD48672A1F66BB8A568E8CEC1AE48A344EA8F779AE2664231C20637C0797484A11D18920CD04F86D47', '/home/oracle/private.key') FROM dual;
+SELECT system.encrypt2hexstring('this is a larger string to encrypt but not to big', '/home/oracle/public.key') FROM dual;
+SELECT system.decryptfromhexstring('41F487A26FF9C4BF3F16738F55D745EAC2E01171EA279F5837AD83AC25E48C5E1C0D321049584286F4CBE047067B53681CC9D027B1722DA4735DDF82649B52E297996620EA053DE640F51D3C4C384D9B4186AA867120811D2875E0C1208C849637B93DB10603B0A87A6668D99D1601AAE3BDC534B41B9CFC8994C0E5E6E31EE6', '/home/oracle/private.key') FROM dual;
 -----------------------------------------------------------------------------------------------------------------------------------------------
-
-INSERT INTO casinocrm.crypto_test(id, name) VALUES(5, 'παπαδόπουλος3');
-
-INSERT INTO casinocrm.crypto_test(id, name) VALUES(6, 'Napoleon3');
-
-SELECT * FROM casinocrm.crypto_test_old;
-
-SELECT * FROM casinocrm.crypto_test;
-
-UPDATE casinocrm.crypto_test SET name = 'james' WHERE id = 1;
-
-DELETE casinocrm.crypto_test WHERE id = 1;

@@ -102,7 +102,7 @@ public class RSACryptographyHelper {
     return encrypt2ByteArray(originalText, publicKey);
   }
 
-  public static String encryptToHexString(String originalText, String publicKeyFile) throws IOException, ClassNotFoundException {
+  public static String encrypt2HexString(String originalText, String publicKeyFile) throws IOException, ClassNotFoundException {
     return bytesToHex(encrypt2ByteArray(originalText, publicKeyFile));
   }
 
