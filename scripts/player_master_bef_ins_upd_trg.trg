@@ -6,7 +6,7 @@ begin
   if inserting or updating('last_name') then
   
     if :new.last_name is not null then
-      :new.last_name := system.encrypttohexstring(:new.last_name, '/home/oracle/public.key');
+      :new.last_name := system.encrypt2hexstring(:new.last_name, '/home/oracle/public.key');
     end if;
   
   end if;

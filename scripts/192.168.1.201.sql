@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION echo(message VARCHAR2) RETURN VARCHAR2 AS
 CREATE OR REPLACE FUNCTION system.encrypt2bytearray(originaltext VARCHAR2, publickeyfile VARCHAR2) RETURN RAW AS
   LANGUAGE JAVA NAME 'gr.northdigital.cryptography.RSACryptographyHelper.encrypt2ByteArray(java.lang.String,java.lang.String) return java.lang.Byte[]';
 
-CREATE OR REPLACE FUNCTION system.encrypttohexstring(originaltext VARCHAR2, publickeyfile VARCHAR2) RETURN VARCHAR2 AS
+CREATE OR REPLACE FUNCTION system.encrypt2hexstring(originaltext VARCHAR2, publickeyfile VARCHAR2) RETURN VARCHAR2 AS
   LANGUAGE JAVA NAME 'gr.northdigital.cryptography.RSACryptographyHelper.encryptToHexString(java.lang.String,java.lang.String) return java.lang.String';
 -----------------------------------------------------------------------------------------------------------------------------------------------
 
