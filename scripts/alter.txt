@@ -1,0 +1,1 @@
+alter table LOGISMOS.AUTOCHKIN_MONITOR modify last_name VARCHAR2(4000);
