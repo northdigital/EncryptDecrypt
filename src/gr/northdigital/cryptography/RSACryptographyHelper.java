@@ -11,25 +11,8 @@ public class RSACryptographyHelper {
 
   private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
-  private static String bytesToHex(byte[] bytes) {
-    char[] hexChars = new char[bytes.length * 2];
-    for (int j = 0; j < bytes.length; j++) {
-      int v = bytes[j] & 0xFF;
-      hexChars[j * 2] = hexArray[v >>> 4];
-      hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-    }
-    return new String(hexChars);
-  }
-
-  private static byte[] hexStringToByteArray(String hexString) {
-    int len = hexString.length();
-    byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2) {
-      data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
-        + Character.digit(hexString.charAt(i + 1), 16));
-    }
-
-    return data;
+  public static String echo(String message) {
+    return message + ',' + message;
   }
 
   public static void generateKey(String privateKeyFileName, String publicKeyFileName) {
@@ -76,36 +59,63 @@ public class RSACryptographyHelper {
     return false;
   }
 
-  public static byte[] encrypt(String text, PublicKey publicKey) {
+  public static String bytesToHex(byte[] bytes) {
+    char[] hexChars = new char[bytes.length * 2];
+    for (int j = 0; j < bytes.length; j++) {
+      int v = bytes[j] & 0xFF;
+      hexChars[j * 2] = hexArray[v >>> 4];
+      hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+    }
+    return new String(hexChars);
+  }
+
+  public static byte[] hexStringToByteArray(String hexString) {
+    int len = hexString.length();
+    byte[] data = new byte[len / 2];
+    for (int i = 0; i < len; i += 2) {
+      data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+        + Character.digit(hexString.charAt(i + 1), 16));
+    }
+
+    return data;
+  }
+
+  // ENCRYPT *************************************************************************************
+
+  public static byte[] encrypt2ByteArray(String originalText, PublicKey publicKey) {
     byte[] cipherText = null;
     try {
       final Cipher cipher = Cipher.getInstance("RSA");
       cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-      cipherText = cipher.doFinal(text.getBytes());
+      cipherText = cipher.doFinal(originalText.getBytes());
     } catch (Exception e) {
       e.printStackTrace();
     }
     return cipherText;
   }
 
-  public static byte[] encrypt(String originalText, String publicKeyFile) throws IOException, ClassNotFoundException {
+  public static byte[] encrypt2ByteArray(String originalText, String publicKeyFile) throws IOException, ClassNotFoundException {
     ObjectInputStream inputStream = null;
 
     inputStream = new ObjectInputStream(new FileInputStream(publicKeyFile));
     final PublicKey publicKey = (PublicKey) inputStream.readObject();
-    return encrypt(originalText, publicKey);
+    return encrypt2ByteArray(originalText, publicKey);
   }
 
-  public static String encryptEx(String originalText, String publicKeyFile) throws IOException, ClassNotFoundException {
-    return bytesToHex(encrypt(originalText, publicKeyFile));
+  public static String encryptToHexString(String originalText, String publicKeyFile) throws IOException, ClassNotFoundException {
+    return bytesToHex(encrypt2ByteArray(originalText, publicKeyFile));
   }
 
-  public static String decrypt(byte[] cipherText, PrivateKey key) {
+  // END ENCRYPT *********************************************************************************
+
+  // DECRYPT *************************************************************************************
+
+  public static String decryptFromByteArray(byte[] cipherArray, PrivateKey key) {
     byte[] dectyptedText = null;
     try {
       final Cipher cipher = Cipher.getInstance("RSA");
       cipher.init(Cipher.DECRYPT_MODE, key);
-      dectyptedText = cipher.doFinal(cipherText);
+      dectyptedText = cipher.doFinal(cipherArray);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -113,19 +123,21 @@ public class RSACryptographyHelper {
     return new String(dectyptedText);
   }
 
-  public static String decrypt(byte[] cipherText, String privateKeyFile) throws IOException, ClassNotFoundException {
+  public static String decryptFromByteArray(byte[] cipherArray, String privateKeyFile) throws IOException, ClassNotFoundException {
     ObjectInputStream inputStream = null;
 
     inputStream = new ObjectInputStream(new FileInputStream(privateKeyFile));
     final PrivateKey privateKey = (PrivateKey) inputStream.readObject();
-    return RSACryptographyHelper.decrypt(cipherText, privateKey);
+    return RSACryptographyHelper.decryptFromByteArray(cipherArray, privateKey);
   }
 
-  public static String decryptEx(String cipherText, String privateKeyFile) throws IOException, ClassNotFoundException {
-    return decrypt(hexStringToByteArray(cipherText), privateKeyFile);
+  public static String decryptFromHexString(String cipherHexText, String privateKeyFile) throws IOException, ClassNotFoundException {
+    return decryptFromByteArray(hexStringToByteArray(cipherHexText), privateKeyFile);
   }
 
-  public static String echo(String message) {
-    return message + ',' + message;
+  public static String decryptFromRaw(oracle.sql.RAW cipherRaw, String privateKeyFile) throws IOException, ClassNotFoundException {
+    return decryptFromByteArray(cipherRaw.getBytes(), privateKeyFile);
   }
+
+  // END DECRYPT *********************************************************************************
 }

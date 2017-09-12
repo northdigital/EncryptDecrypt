@@ -20,17 +20,18 @@ public class Main {
 
       final String originalText = "ΠΑΠΑΔΟΠΟΥΛΟΣ";
 
-      final byte[] cipherText = RSACryptographyHelper.encrypt(originalText, PUBLIC_KEY_FILE);
-      final String plainText = RSACryptographyHelper.decrypt(cipherText, PRIVATE_KEY_FILE);
+      final byte[] cipherText = RSACryptographyHelper.encrypt2ByteArray(originalText, PUBLIC_KEY_FILE);
+      final String plainText = RSACryptographyHelper.decryptFromByteArray(cipherText, PRIVATE_KEY_FILE);
 
       System.out.println("Original: " + originalText);
       System.out.println("Encrypted: " + cipherText.toString());
       System.out.println("Decrypted: " + plainText);
 
-      String hexCipherText2 = RSACryptographyHelper.encryptEx(originalText, PUBLIC_KEY_FILE);
-      System.out.println("hexText: " + hexCipherText2);
-      String originalText2 = RSACryptographyHelper.decryptEx(hexCipherText2, PRIVATE_KEY_FILE);
-      System.out.println("originalText2: " + originalText2);
+      String hexCipherText = RSACryptographyHelper.encryptToHexString(originalText, PUBLIC_KEY_FILE);
+      String hexOriginalText = RSACryptographyHelper.decryptFromHexString(hexCipherText, PRIVATE_KEY_FILE);
+
+      System.out.println("hexText: " + hexCipherText);
+      System.out.println("hexText: " + hexOriginalText);
     } catch (Exception e) {
       e.printStackTrace();
     }
